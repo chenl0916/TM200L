@@ -24,6 +24,7 @@ extern u8 UartRxBuffer[UART_BUF_MAX_LENGTH];
 //uartdrv
 extern void SerialPutChar(uint8_t c);
 extern  void PutStringToUart(char *DataBuf);
+extern void putint(int32_t data);
 #endif  /* _HYPERTERMINAL_H */
 /*******************************************************************************
 End Of The File

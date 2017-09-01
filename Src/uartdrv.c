@@ -34,6 +34,32 @@ void PutStringToUart(char *DataBuf)
 	}
 }
 
+void format_int_to_string(int data, char *string)
+{
+  char format = 0;
+  int i;
+  string[0] = '0';
+  string[1] = 'x';
+  for(i = 7; i >= 0; i--)
+  {
+    format = (data&(0xF<<(4*i))) >> (4*i);
+    if(format > 9)
+      string[9-i] = format - 10 + 'A';
+    else
+      string[9-i] = format + '0';
+  }
+  string[10] = '\r';
+  string[11] = '\n';
+  string[12] = '\0';
+}
+
+void putint(int32_t data)
+{
+  char buf[16] = {0};
+  format_int_to_string(data, buf);
+  PutStringToUart(buf);
+}
+
 /*******************************************************************************
 End Of The File
 *******************************************************************************/

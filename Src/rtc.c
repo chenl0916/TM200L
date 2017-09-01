@@ -8,15 +8,19 @@
 *******************************************************************************/
 /* Includes ------------------------------------------------------------------*/
 #include "stm8l15x.h"
+
 #include "iic.h"
 #include "adc.h"
 #include "rtc.h"
 #include "uartdrv.h"
 /* Extern variables ---------------------------------------------------------*/
+extern TimeTableT wakeuptimetable = {0};
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+static u8 RTCAlarmStatus = FALSE;
+static u8 RTCWakeStatus = FALSE;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 void DectoBCD(int Dec, u8 *Bcd, int length)
@@ -29,6 +33,19 @@ void DectoBCD(int Dec, u8 *Bcd, int length)
 		Bcd[i] = ((temp/10)<<4) + ((temp%10) & 0x0F);
 		Dec /= 100;
 	}
+}
+
+static uint8_t ByteToBCD(uint8_t Value)
+{
+  uint8_t bcdhigh = 0;
+
+  while (Value >= 10)
+  {
+    bcdhigh++;
+    Value -= 10;
+  }
+
+  return  (uint8_t)((uint8_t)(bcdhigh << 4) | Value);
 }
 
 void RTC_Configuration(void)
@@ -64,8 +81,71 @@ void RTC_Configuration(void)
 #endif
 	// Set time
 	SetRTCDatetime(&timeTable);
-	// Disable wakeup
-	RTC_WakeUpCmd(DISABLE);
+	// // Disable wakeup
+	// RTC_WakeUpCmd(DISABLE);
+
+	// RTC wakeup set
+	RTC_WakeUpSet(RTC_WAKEUP_PERIOD_SECONDS);
+	wakeuptimetable = GetRTCDatetime();
+	
+}
+
+void RTC_WakeUpSet(uint16_t SecondsToWakeup)
+{
+	RTC_WakeUpClockConfig(RTC_WakeUpClock_CK_SPRE_16bits);
+	RTC_ITConfig(RTC_IT_WUT, ENABLE);
+
+	RTC_SetWakeUpCounter(SecondsToWakeup);
+    RTC_WakeUpCmd(DISABLE);
+}
+
+void SetRTCWakeStatus(u8 Status)
+{
+	RTCWakeStatus = Status;
+}
+
+u8 GetRTCWakeStatus(void)
+{
+	return RTCWakeStatus;
+}
+
+uint16_t QuerySecondsLeftBeforePowerReset(void)
+{
+	TimeTableT timeTable = {0};
+	timeTable = GetRTCDatetime();
+	return (RTC_WAKEUP_PERIOD_SECONDS - ((timeTable.hour - wakeuptimetable.hour) * 3600
+			+ (timeTable.minute - wakeuptimetable.minute) * 60
+			+ timeTable.second - wakeuptimetable.second));
+}
+
+void RTC_AlarmSet(uint8_t SecondsToAlarm)
+{
+	/* Disable the write protection for RTC registers */
+	RTC->WPR = 0xCA;
+	RTC->WPR = 0x53;
+
+	/* Configure the Alarm register */
+	RTC->ALRMAR1 = ByteToBCD(SecondsToAlarm);
+	RTC->ALRMAR2 = 0x80;
+	RTC->ALRMAR3 = 0x80;
+	RTC->ALRMAR4 = 0x80;
+
+	/* Enable the write protection for RTC registers */
+	RTC->WPR = 0xFF;
+
+	RTC_ITConfig(RTC_IT_ALRA, ENABLE);
+
+	RTC_AlarmCmd(DISABLE);
+}
+
+void SetRTCAlarmStatus(u8 Status)
+{
+	RTCAlarmStatus = Status;
+}
+
+u8 GetRTCAlarmStatus(void)
+{
+	return RTCAlarmStatus;
 }
 
 TimeTableT GetRTCDatetime(void)

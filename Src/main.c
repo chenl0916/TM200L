@@ -15,6 +15,7 @@
 #include "main.h"
 #include "atcmd.h"
 #include "uartdrv.h"
+#include "wwdg.h"
 #include "initialization.h"
 
 /* Private defines -----------------------------------------------------------*/
@@ -93,6 +94,9 @@ void PeriodicCheckInterrupt(void)
 void main(void)
 {
 	SystemInitialization();
+
+	// ENABLE RTC wakeup
+	RTC_WakeUpCmd(ENABLE);
 	// Man Loop
 	while (1)
 	{
@@ -102,10 +106,18 @@ void main(void)
 			{
 				// AT command
 				ATCmdDetection();
+				TickWindowWatchdog();
 				// ADC check 
 				PeriodicCheckAdcValue();
+				TickWindowWatchdog();
+				
+				if (GetRTCWakeStatus())
+				{
+					PutStringToUart("\r\nWakeup");
+					SetRTCWakeStatus(FALSE);
+				}
 				// Interrupt check
-				PeriodicCheckInterrupt();
+				// PeriodicCheckInterrupt();
 			}
 			break;
 			case MAIN_LOOP_DEEP_SLEEP:
@@ -117,6 +129,8 @@ void main(void)
 				HaltPowerConsumption();
 				// Sleep now
 				halt();
+				// // DISABLE RTC wakeup
+				// RTC_WakeUpCmd(DISABLE);
 				// Re-Init
 				SystemFromHaltToIdleReinit();
 				// Delay

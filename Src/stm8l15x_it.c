@@ -31,13 +31,17 @@
 #include "iic.h"
 #include "adc.h"
 #include "main.h"
+#include "rtc.h"
 #include "atcmd.h"
 #include "uartdrv.h"
 
 /** @addtogroup STM8L15x_StdPeriph_Template
   * @{
   */
-	
+  
+/* Extern variables ---------------------------------------------------------*/
+extern TimeTableT wakeuptimetable;
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define UART1_END_CHAR_OD 		0x0D
@@ -131,6 +135,18 @@ INTERRUPT_HANDLER(RTC_CSSLSE_IRQHandler,4)
     /* In order to detect unexpected events during development,
        it is recommended to set a breakpoint on the following instruction.
     */
+    // if (RTC->ISR2 & (RTC_IT_ALRA >> 4))
+    // {
+    //   RTC_ClearITPendingBit(RTC_IT_ALRA);
+    //   SetRTCAlarmStatus(TRUE);
+    // }
+
+    if (RTC->ISR2 & (RTC_IT_WUT >> 4))
+    {
+      SetRTCWakeStatus(TRUE);
+      RTC_ClearITPendingBit(RTC_IT_WUT);
+      wakeuptimetable = GetRTCDatetime();
+    }
 }
 /**
   * @brief External IT PORTE/F and PVD Interrupt routine.

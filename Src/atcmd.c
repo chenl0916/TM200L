@@ -61,8 +61,11 @@ void ATCmdDetection(void)
 		// Show RTC time
 		if(strncmp((char *)UartData,(char *)AT_STRING_RTC,strlen((char *)AT_STRING_RTC)) == 0)
 		{
-			// Show Time
-			ShowCurrentTime();
+			uint16_t seconds_left = 0;
+			// // Show Time
+			// ShowCurrentTime();
+			seconds_left = QuerySecondsLeftBeforePowerReset();
+			putint(seconds_left);
 			// Show OK
 			PutStringToUart((char*)"\r\nOK\r\n");
 			return;			

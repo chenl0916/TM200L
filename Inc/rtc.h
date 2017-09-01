@@ -27,6 +27,7 @@
 #define WAKE_S2_FOR_SECS	(4*60)
 #define RTC_DEFAULT_TIME 		{2017,7,25,17,55,35,2}	// Year-month-day  hour:minute:second  weekday
 #define RTC_TIMER_SHOW 		(25)
+#define RTC_WAKEUP_PERIOD_SECONDS  (8)
 
 typedef struct {
   uint16 year;
@@ -43,6 +44,13 @@ typedef struct {
 
 //Function Declare
 extern void RTC_Configuration(void);
+extern void RTC_WakeUpSet(uint16_t SecondsToWakeup);
+extern void SetRTCWakeStatus(u8 Status);
+extern u8 GetRTCWakeStatus(void);
+extern uint16_t QuerySecondsLeftBeforePowerReset(void);
+extern void RTC_AlarmSet(uint8_t SecondsToAlarm);
+extern void SetRTCAlarmStatus(u8 Status);
+extern u8 GetRTCAlarmStatus(void);
 extern void DectoBCD(int Dec, u8 *Bcd, int length);
 extern TimeTableT GetRTCDatetime(void);
 extern void SetRTCDatetime(TimeTableT *tm);
