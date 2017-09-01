@@ -125,61 +125,61 @@ void ADCConversionStart(void)
 
 void ShowAdcConvertVoltage(void)
 {
-	#define CONVERT_ACCURACY 	5
-	u8 idx;
-	u8 VbatAdcTemp[CONVERT_ACCURACY];
-	u8 VinAdcTemp[CONVERT_ACCURACY];
-	u8 VbatVoltTemp[CONVERT_ACCURACY];
-	u8 VinVoltTemp[CONVERT_ACCURACY];
+	// #define CONVERT_ACCURACY 	5
+	// u8 idx;
+	// u8 VbatAdcTemp[CONVERT_ACCURACY];
+	// u8 VinAdcTemp[CONVERT_ACCURACY];
+	// u8 VbatVoltTemp[CONVERT_ACCURACY];
+	// u8 VinVoltTemp[CONVERT_ACCURACY];
 	
-	u16 VBattAdcValue = GetADCConversionBattValue();
-	u16 VVinAdcValue = GetADCConversionVinValue();
-	u16 VBattVoltValue = ((((u32)VBattAdcValue *3300)/4096)*2);
-	u16 VVinVoltValue = ((((u32)VVinAdcValue *3300)/4096)*33);
-	// Convert
-	for(idx = 0; idx < CONVERT_ACCURACY; idx++)
-	{
-		VbatAdcTemp[idx] = VBattAdcValue % 10 + '0';
-		VBattAdcValue = VBattAdcValue /10;  
-	}
-	for(idx = 0; idx < CONVERT_ACCURACY; idx++)
-	{
-		VinAdcTemp[idx] = VVinAdcValue % 10 + '0';
-		VVinAdcValue = VVinAdcValue /10;  
-	}
-	for(idx = 0; idx < CONVERT_ACCURACY; idx++)
-	{
-		VbatVoltTemp[idx] = VBattVoltValue % 10 + '0';
-		VBattVoltValue = VBattVoltValue /10;  
-	}
-	for(idx = 0; idx < CONVERT_ACCURACY; idx++)
-	{
-		VinVoltTemp[idx] = VVinVoltValue % 10 + '0';
-		VVinVoltValue = VVinVoltValue /10;  
-	}
-	// Show Battery Voltage
-	PutStringToUart((char*)"\r\nADC: Value(");
-	SerialPutChar(VbatAdcTemp[3]);
-	SerialPutChar(VbatAdcTemp[2]);
-	SerialPutChar(VbatAdcTemp[1]);
-	SerialPutChar(VbatAdcTemp[0]);
-	SerialPutChar(' ');
-	SerialPutChar(VinAdcTemp[3]);
-	SerialPutChar(VinAdcTemp[2]);
-	SerialPutChar(VinAdcTemp[1]);
-	SerialPutChar(VinAdcTemp[0]);
-	PutStringToUart((char*)") VBattery(");
-	SerialPutChar(VbatVoltTemp[3]);
-	SerialPutChar(VbatVoltTemp[2]);
-	SerialPutChar(VbatVoltTemp[1]);
-	SerialPutChar(VbatVoltTemp[0]);
-	PutStringToUart((char*)" mV)  Vin(");
-	SerialPutChar(VinVoltTemp[4]);
-	SerialPutChar(VinVoltTemp[3]);
-	SerialPutChar(VinVoltTemp[2]);
-	SerialPutChar(VinVoltTemp[1]);
-	SerialPutChar(VinVoltTemp[0]);
-	PutStringToUart((char*)" mV)\r\n");
+	// u16 VBattAdcValue = GetADCConversionBattValue();
+	// u16 VVinAdcValue = GetADCConversionVinValue();
+	// u16 VBattVoltValue = ((((u32)VBattAdcValue *3300)/4096)*2);
+	// u16 VVinVoltValue = ((((u32)VVinAdcValue *3300)/4096)*33);
+	// // Convert
+	// for(idx = 0; idx < CONVERT_ACCURACY; idx++)
+	// {
+	// 	VbatAdcTemp[idx] = VBattAdcValue % 10 + '0';
+	// 	VBattAdcValue = VBattAdcValue /10;  
+	// }
+	// for(idx = 0; idx < CONVERT_ACCURACY; idx++)
+	// {
+	// 	VinAdcTemp[idx] = VVinAdcValue % 10 + '0';
+	// 	VVinAdcValue = VVinAdcValue /10;  
+	// }
+	// for(idx = 0; idx < CONVERT_ACCURACY; idx++)
+	// {
+	// 	VbatVoltTemp[idx] = VBattVoltValue % 10 + '0';
+	// 	VBattVoltValue = VBattVoltValue /10;  
+	// }
+	// for(idx = 0; idx < CONVERT_ACCURACY; idx++)
+	// {
+	// 	VinVoltTemp[idx] = VVinVoltValue % 10 + '0';
+	// 	VVinVoltValue = VVinVoltValue /10;  
+	// }
+	// // Show Battery Voltage
+	// PutStringToUart((char*)"\r\nADC: Value(");
+	// SerialPutChar(VbatAdcTemp[3]);
+	// SerialPutChar(VbatAdcTemp[2]);
+	// SerialPutChar(VbatAdcTemp[1]);
+	// SerialPutChar(VbatAdcTemp[0]);
+	// SerialPutChar(' ');
+	// SerialPutChar(VinAdcTemp[3]);
+	// SerialPutChar(VinAdcTemp[2]);
+	// SerialPutChar(VinAdcTemp[1]);
+	// SerialPutChar(VinAdcTemp[0]);
+	// PutStringToUart((char*)") VBattery(");
+	// SerialPutChar(VbatVoltTemp[3]);
+	// SerialPutChar(VbatVoltTemp[2]);
+	// SerialPutChar(VbatVoltTemp[1]);
+	// SerialPutChar(VbatVoltTemp[0]);
+	// PutStringToUart((char*)" mV)  Vin(");
+	// SerialPutChar(VinVoltTemp[4]);
+	// SerialPutChar(VinVoltTemp[3]);
+	// SerialPutChar(VinVoltTemp[2]);
+	// SerialPutChar(VinVoltTemp[1]);
+	// SerialPutChar(VinVoltTemp[0]);
+	// PutStringToUart((char*)" mV)\r\n");
 }
 
 void PeriodicCheckAdcValue(void)

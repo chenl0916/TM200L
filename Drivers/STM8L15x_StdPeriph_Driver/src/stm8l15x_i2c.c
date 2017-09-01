@@ -219,34 +219,34 @@ void I2C_Init(I2C_TypeDef* I2Cx, uint32_t OutputClockFrequency, uint16_t OwnAddr
   /* Detect Fast or Standard mode depending on the Output clock frequency selected */
   if (OutputClockFrequency > I2C_MAX_STANDARD_FREQ) /* FAST MODE */
   {
-    /* Set F/S bit for fast mode */
-    tmpccrh = I2C_CCRH_FS;
+    // /* Set F/S bit for fast mode */
+    // tmpccrh = I2C_CCRH_FS;
 
-    if (I2C_DutyCycle == I2C_DutyCycle_2)
-    {
-      /* Fast mode speed calculate: Tlow/Thigh = 2 */
-      result = (uint32_t) ((input_clock * 1000000) / (OutputClockFrequency * 3));
-    }
-    else /* I2C_DUTYCYCLE_16_9 */
-    {
-      /* Fast mode speed calculate: Tlow/Thigh = 16/9 */
-      result = (uint32_t) ((input_clock * 1000000) / (OutputClockFrequency * 25));
-      /* Set DUTY bit */
-      tmpccrh |= I2C_CCRH_DUTY;
-    }
+    // if (I2C_DutyCycle == I2C_DutyCycle_2)
+    // {
+    //   /* Fast mode speed calculate: Tlow/Thigh = 2 */
+    //   result = (uint32_t) ((input_clock * 1000000) / (OutputClockFrequency * 3));
+    // }
+    // else /* I2C_DUTYCYCLE_16_9 */
+    // {
+    //   /* Fast mode speed calculate: Tlow/Thigh = 16/9 */
+    //   result = (uint32_t) ((input_clock * 1000000) / (OutputClockFrequency * 25));
+    //   /* Set DUTY bit */
+    //   tmpccrh |= I2C_CCRH_DUTY;
+    // }
 
-    /* Verify and correct CCR value if below minimum value */
-    if (result < (uint16_t)0x01)
-    {
-      /* Set the minimum allowed value */
-      result = (uint16_t)0x0001;
-    }
+    // /* Verify and correct CCR value if below minimum value */
+    // if (result < (uint16_t)0x01)
+    // {
+    //   /* Set the minimum allowed value */
+    //   result = (uint16_t)0x0001;
+    // }
 
-    /* Set Maximum Rise Time: 300ns max in Fast Mode
-    = [300ns/(1/input_clock.10e6)]+1
-    = [(input_clock * 3)/10]+1 */
-    tmpval = ((input_clock * 3) / 10) + 1;
-    I2Cx->TRISER = (uint8_t)tmpval;
+    // /* Set Maximum Rise Time: 300ns max in Fast Mode
+    // = [300ns/(1/input_clock.10e6)]+1
+    // = [(input_clock * 3)/10]+1 */
+    // tmpval = ((input_clock * 3) / 10) + 1;
+    // I2Cx->TRISER = (uint8_t)tmpval;
 
   }
   else /* STANDARD MODE */
@@ -1144,8 +1144,10 @@ I2C_Event_TypeDef I2C_GetLastEvent(I2C_TypeDef* I2Cx)
   *            @arg I2C_FLAG_STOPF: Stop detection flag (Slave mode)
   *            @arg I2C_FLAG_ADD10: 10-bit header sent flag (Master mode)
   *            @arg I2C_FLAG_BTF: Byte transfer finished flag
-  *            @arg I2C_FLAG_ADDR: Address sent flag (Master mode) “ADSL”
-  *   Address matched flag (Slave mode)”ENDAD”
+  *            @arg I2C_FLAG_ADDR: Address sent flag (Master mode) ï¿½ADSLï¿½
+
+  *   Address matched flag (Slave mode)ï¿½ENDADï¿½
+
   *            @arg I2C_FLAG_SB: Start bit flag (Master mode)
   * @retval The new state of I2C_FLAG (SET or RESET).
   */
@@ -1256,8 +1258,10 @@ void I2C_ClearFlag(I2C_TypeDef* I2Cx, I2C_FLAG_TypeDef I2C_FLAG)
   *            @arg I2C_IT_STOPF: Stop detection flag (Slave mode)
   *            @arg I2C_IT_ADD10: 10-bit header sent flag (Master mode)
   *            @arg I2C_IT_BTF: Byte transfer finished flag
-  *            @arg I2C_IT_ADDR: Address sent flag (Master mode) “ADSL”
-  *                              Address matched flag (Slave mode)“ENDAD”
+  *            @arg I2C_IT_ADDR: Address sent flag (Master mode) ï¿½ADSLï¿½
+
+  *                              Address matched flag (Slave mode)ï¿½ENDADï¿½
+
   *            @arg I2C_IT_SB: Start bit flag (Master mode)
   * @retval The new state of I2C_IT
   */

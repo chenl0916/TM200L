@@ -45,20 +45,31 @@ static void CLK_Configuration(void)
 {
 	/*High speed internal clock prescaler: 1  Fmaster = 8MHz Clock divider to HSI/1*/
 	CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_2);
-	/* Enable Time3 clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_TIM3 , ENABLE);
-	/* Enable RTC clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_RTC, ENABLE);
-	/* Enable CLK_Peripheral_USART1 clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_USART1 , ENABLE);
-	/* Enable ADC1 clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, ENABLE);
-	#ifndef ADC_SINGLE_CHANNEL_SUPPORT
-	/* Enable DMA1 clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_DMA1, ENABLE);
-	#endif
-	/* Enable I2C1 clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_I2C1, ENABLE);
+
+	// /* Enable Time3 clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_TIM3 , ENABLE);
+	// /* Enable RTC clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_RTC, ENABLE);
+	// /* Enable CLK_Peripheral_USART1 clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_USART1 , ENABLE);
+	// /* Enable ADC1 clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, ENABLE);
+	// #ifndef ADC_SINGLE_CHANNEL_SUPPORT
+	// /* Enable DMA1 clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_DMA1, ENABLE);
+	// #endif
+	// /* Enable I2C1 clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_I2C1, ENABLE);
+
+	/* Enable the peripheral Clock */
+	CLK->PCKENR1 |= (uint8_t)(	(uint8_t)1 << ((uint8_t)CLK_Peripheral_TIM3 & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_I2C1 & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_USART1 & (uint8_t)0x0F));
+
+	/* Enable the peripheral Clock */
+	CLK->PCKENR2 |= (uint8_t)(	(uint8_t)1 << ((uint8_t)CLK_Peripheral_ADC1 & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_RTC & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_DMA1 & (uint8_t)0x0F));
 }
 
 static void GPIO_Configuration(void)
@@ -121,8 +132,10 @@ static void UART_Configuration(void)
 	    USART_Parity_No,
 	    USART_Mode_RxTx);
 
-	USART_ITConfig(USART1, USART_IT_RXNE , ENABLE);
-	USART_Cmd(USART1 , ENABLE);
+	// USART_ITConfig(USART1, USART_IT_RXNE , ENABLE);
+	USART1->CR2 |= (uint8_t)((uint8_t)1 << (uint8_t)0x05);
+	// USART_Cmd(USART1 , ENABLE);
+	USART1->CR1 &= (uint8_t)(~USART_CR1_USARTD); /**< USART Enable */
 }
 
 void PWM_Configuration(u32 freq, u8 dutycycle, FunctionalState onoff)
@@ -137,7 +150,8 @@ void PWM_Configuration(u32 freq, u8 dutycycle, FunctionalState onoff)
 	   TIM3_OCPolarity_Low ,
 	   TIM3_OCIdleState_Set);
 
-	TIM3_CCxCmd(TIM3_Channel_1 , ENABLE);
+	// TIM3_CCxCmd(TIM3_Channel_1 , ENABLE);
+	TIM3->CCER1 |= TIM_CCER1_CC1E ;
 	TIM3_SetCompare1(freq * dutycycle / 100);
 	TIM3_CtrlPWMOutputs(onoff);
 	TIM3_Cmd(onoff);
@@ -192,26 +206,46 @@ void HaltPowerConsumption(void)
 	GPIO_Init(GPIOD, GPIO_Pin_All,GPIO_Mode_In_FL_No_IT );*/
 
 
-	// Close Clock
-	CLK_PeripheralClockConfig(CLK_Peripheral_TIM3 , DISABLE);
-	//CLK_PeripheralClockConfig(CLK_Peripheral_RTC, DISABLE);
-	CLK_PeripheralClockConfig(CLK_Peripheral_USART1 , DISABLE);
-	CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, DISABLE);
-	#ifndef ADC_SINGLE_CHANNEL_SUPPORT
-	CLK_PeripheralClockConfig(CLK_Peripheral_DMA1, DISABLE);
-	#endif
-	CLK_PeripheralClockConfig(CLK_Peripheral_I2C1, DISABLE);
+	// // Close Clock
+	// CLK_PeripheralClockConfig(CLK_Peripheral_TIM3 , DISABLE);
+	// //CLK_PeripheralClockConfig(CLK_Peripheral_RTC, DISABLE);
+	// CLK_PeripheralClockConfig(CLK_Peripheral_USART1 , DISABLE);
+	// CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, DISABLE);
+	// #ifndef ADC_SINGLE_CHANNEL_SUPPORT
+	// CLK_PeripheralClockConfig(CLK_Peripheral_DMA1, DISABLE);
+	// #endif
+	// CLK_PeripheralClockConfig(CLK_Peripheral_I2C1, DISABLE);
+
+	/* Disable the peripheral Clock */
+	CLK->PCKENR1 &= ~(uint8_t)(	(uint8_t)1 << ((uint8_t)CLK_Peripheral_TIM3 & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_I2C1 & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_USART1 & (uint8_t)0x0F));
+
+	/* Disable the peripheral Clock */
+	CLK->PCKENR2 &= ~(uint8_t)(	(uint8_t)1 << ((uint8_t)CLK_Peripheral_ADC1 & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_DMA1 & (uint8_t)0x0F));
 
 	CLK_HaltConfig(CLK_Halt_SlowWakeup, ENABLE);
 }
 
 void SystemFromHaltToIdleReinit(void)
 {
-	// Open Clock
-	/* Enable CLK_Peripheral_USART1 clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_USART1 , ENABLE);
-	/* Enable ADC1 clock */
-	CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, ENABLE);
+	// // Open Clock
+	// /* Enable CLK_Peripheral_USART1 clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_USART1 , ENABLE);
+	// /* Enable ADC1 clock */
+	// CLK_PeripheralClockConfig(CLK_Peripheral_ADC1, ENABLE);
+
+	/* Enable the peripheral Clock */
+	CLK->PCKENR1 |= (uint8_t)(	/*(uint8_t)1 << ((uint8_t)CLK_Peripheral_TIM3 & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_I2C1 & (uint8_t)0x0F)
+								| */(uint8_t)1 << ((uint8_t)CLK_Peripheral_USART1 & (uint8_t)0x0F));
+
+	/* Enable the peripheral Clock */
+	CLK->PCKENR2 |= (uint8_t)(	(uint8_t)1 << ((uint8_t)CLK_Peripheral_ADC1 & (uint8_t)0x0F)
+								/*| (uint8_t)1 << ((uint8_t)CLK_Peripheral_RTC & (uint8_t)0x0F)
+								| (uint8_t)1 << ((uint8_t)CLK_Peripheral_DMA1 & (uint8_t)0x0F)*/);
+
 	// Open Peripherals
 	UART_Configuration();
 	ADC_Configuration();

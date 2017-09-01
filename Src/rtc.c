@@ -119,33 +119,33 @@ void SetRTCDatetime(TimeTableT *tm)
 
 void ShowCurrentTime(void)
 {
-	TimeTableT timeTable = GetRTCDatetime();
+	// TimeTableT timeTable = GetRTCDatetime();
 	
-	PutStringToUart((char*)"\r\nRTC Time: ");
-	// Year
-	SerialPutChar(timeTable.year/10%10 + '0');
-	SerialPutChar(timeTable.year%10 + '0');
-	SerialPutChar('/');
-	// Month
-	SerialPutChar(timeTable.month/10%10 + '0');
-	SerialPutChar(timeTable.month%10 + '0');
-	SerialPutChar('/');
-	// Day
-	SerialPutChar(timeTable.day/10%10 + '0');
-	SerialPutChar(timeTable.day%10 + '0');
-	SerialPutChar(' ');
-	// Hour
-	SerialPutChar(timeTable.hour/10%10 + '0');
-	SerialPutChar(timeTable.hour%10 + '0');
-	SerialPutChar(':');
-	// Minute
-	SerialPutChar(timeTable.minute/10%10 + '0');
-	SerialPutChar(timeTable.minute%10 + '0');
-	SerialPutChar(':');
-	// Second
-	SerialPutChar(timeTable.second/10%10 + '0');
-	SerialPutChar(timeTable.second%10 + '0');
-	PutStringToUart((char*)"\r\n");
+	// PutStringToUart((char*)"\r\nRTC Time: ");
+	// // Year
+	// SerialPutChar(timeTable.year/10%10 + '0');
+	// SerialPutChar(timeTable.year%10 + '0');
+	// SerialPutChar('/');
+	// // Month
+	// SerialPutChar(timeTable.month/10%10 + '0');
+	// SerialPutChar(timeTable.month%10 + '0');
+	// SerialPutChar('/');
+	// // Day
+	// SerialPutChar(timeTable.day/10%10 + '0');
+	// SerialPutChar(timeTable.day%10 + '0');
+	// SerialPutChar(' ');
+	// // Hour
+	// SerialPutChar(timeTable.hour/10%10 + '0');
+	// SerialPutChar(timeTable.hour%10 + '0');
+	// SerialPutChar(':');
+	// // Minute
+	// SerialPutChar(timeTable.minute/10%10 + '0');
+	// SerialPutChar(timeTable.minute%10 + '0');
+	// SerialPutChar(':');
+	// // Second
+	// SerialPutChar(timeTable.second/10%10 + '0');
+	// SerialPutChar(timeTable.second%10 + '0');
+	// PutStringToUart((char*)"\r\n");
 }
 /*******************************************************************************
 *   Copyrights (C) Asiatelco Technologies Co., 2003-2017. All rights reserved
