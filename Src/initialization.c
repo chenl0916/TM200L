@@ -345,7 +345,8 @@ void SystemInitialization(void)
 	// Wakeup
 	LTEControlWakeup(TRUE);
 
-	WWDG_Configuration();
+	//WWDG_Configuration();
+	IWDG_Configuration();
 }
 
 /*******************************************************************************

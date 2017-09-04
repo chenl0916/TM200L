@@ -16,6 +16,7 @@
 #include "atcmd.h"
 #include "uartdrv.h"
 #include "wwdg.h"
+#include "iwdg.h"
 #include "initialization.h"
 
 /* Private defines -----------------------------------------------------------*/
@@ -106,10 +107,12 @@ void main(void)
 			{
 				// AT command
 				ATCmdDetection();
-				TickWindowWatchdog();
+				TickIndependentWatchdog();
+				// TickWindowWatchdog();
 				// ADC check 
 				PeriodicCheckAdcValue();
-				TickWindowWatchdog();
+				TickIndependentWatchdog();
+				// TickWindowWatchdog();
 				
 				if (GetRTCWakeStatus())
 				{
