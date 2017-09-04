@@ -19,7 +19,6 @@ extern TimeTableT wakeuptimetable = {0};
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-static u8 RTCAlarmStatus = FALSE;
 static u8 RTCWakeStatus = FALSE;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -33,19 +32,6 @@ void DectoBCD(int Dec, u8 *Bcd, int length)
 		Bcd[i] = ((temp/10)<<4) + ((temp%10) & 0x0F);
 		Dec /= 100;
 	}
-}
-
-static uint8_t ByteToBCD(uint8_t Value)
-{
-  uint8_t bcdhigh = 0;
-
-  while (Value >= 10)
-  {
-    bcdhigh++;
-    Value -= 10;
-  }
-
-  return  (uint8_t)((uint8_t)(bcdhigh << 4) | Value);
 }
 
 void RTC_Configuration(void)
@@ -87,7 +73,6 @@ void RTC_Configuration(void)
 	// RTC wakeup set
 	RTC_WakeUpSet(RTC_WAKEUP_PERIOD_SECONDS);
 	wakeuptimetable = GetRTCDatetime();
-	
 }
 
 void RTC_WakeUpSet(uint16_t SecondsToWakeup)
@@ -116,36 +101,6 @@ uint16_t QuerySecondsLeftBeforePowerReset(void)
 	return (RTC_WAKEUP_PERIOD_SECONDS - ((timeTable.hour - wakeuptimetable.hour) * 3600
 			+ (timeTable.minute - wakeuptimetable.minute) * 60
 			+ timeTable.second - wakeuptimetable.second));
-}
-
-void RTC_AlarmSet(uint8_t SecondsToAlarm)
-{
-	/* Disable the write protection for RTC registers */
-	RTC->WPR = 0xCA;
-	RTC->WPR = 0x53;
-
-	/* Configure the Alarm register */
-	RTC->ALRMAR1 = ByteToBCD(SecondsToAlarm);
-	RTC->ALRMAR2 = 0x80;
-	RTC->ALRMAR3 = 0x80;
-	RTC->ALRMAR4 = 0x80;
-
-	/* Enable the write protection for RTC registers */
-	RTC->WPR = 0xFF;
-
-	RTC_ITConfig(RTC_IT_ALRA, ENABLE);
-
-	RTC_AlarmCmd(DISABLE);
-}
-
-void SetRTCAlarmStatus(u8 Status)
-{
-	RTCAlarmStatus = Status;
-}
-
-u8 GetRTCAlarmStatus(void)
-{
-	return RTCAlarmStatus;
 }
 
 TimeTableT GetRTCDatetime(void)

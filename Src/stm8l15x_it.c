@@ -46,6 +46,23 @@ extern TimeTableT wakeuptimetable;
 /* Private define ------------------------------------------------------------*/
 #define UART1_END_CHAR_OD 		0x0D
 #define UART1_END_CHAR_OA 		0x0A
+
+#define I2C_OUTPUT0_CONTROL_REG     0xC0
+#define I2C_BUCK_CONTROL_REG        0xC1
+#define I2C_LOAD_SWITCH_CONTROL_REG 0xC2
+#define I2C_CONTROL_NUM             0x01
+#define I2C_CONTROL_0               RESET
+#define I2C_CONTROL_1               SET
+
+#define I2C_INPUT0_REG              0xD0
+#define I2C_INPUT0_NUM              0x01
+#define I2C_VIN_ADC_REGH            0xD1
+#define I2C_VIN_ADC_REGL            0xD2
+#define I2C_VIN_ADC_NUM             0x02
+#define I2C_VBAT_ADC_REGH           0xD3
+#define I2C_VBAT_ADC_REGL           0xD4
+#define I2C_VBAT_ADC_NUM            0x02
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -550,7 +567,25 @@ INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
         else if(reg_no >= '8')
 	  I2C_SendData(I2C1, 0x88);
         else if(reg_no >= '9')
-	  I2C_SendData(I2C1, 0x99);*/
+    I2C_SendData(I2C1, 0x99);*/
+    else if(reg_no == I2C_INPUT0_REG)
+      I2C_SendData(I2C1, GPIO_ReadInputDataBit(PB5_EXT_INPUT_PORT, PB5_EXT_INPUT_PIN));
+    else if(reg_no == I2C_VIN_ADC_REGH)
+    {
+      I2C_SendData(I2C1, ((GetADCConversionVinValue() >> 8) & 0xff));
+    }
+    else if(reg_no == I2C_VIN_ADC_REGL)
+    {
+      I2C_SendData(I2C1, ((GetADCConversionVinValue()) & 0xff));
+    }
+    else if(reg_no == I2C_VBAT_ADC_REGH)
+    {
+      I2C_SendData(I2C1, ((GetADCConversionBattValue() >> 8) & 0xff));
+    }
+    else if(reg_no == I2C_VBAT_ADC_REGL)
+    {
+      I2C_SendData(I2C1, ((GetADCConversionBattValue()) & 0xff));
+    }
         else
 	  I2C_SendData(I2C1, 0xAA);
       }
@@ -577,6 +612,25 @@ INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
       else if(rw_flag == 2)
       {
         rw_data = I2C_ReceiveData(I2C1);
+        if((reg_no & 0xf0) == 0xC0)
+        {
+          if(reg_no == I2C_OUTPUT0_CONTROL_REG)
+          {
+            GPIO_WriteBit(PB4_EXT_OUTPUT_PORT, PB4_EXT_OUTPUT_PIN, (BitStatus)rw_data);
+          }
+          else if(reg_no == I2C_BUCK_CONTROL_REG)
+          {
+            GPIO_WriteBit(PB6_BUCK_EN_PORT, PB6_BUCK_EN_PIN, (BitStatus)rw_data);
+          }
+          else if(reg_no == I2C_LOAD_SWITCH_CONTROL_REG)
+          {
+            //GPIO_WriteBit(, , (BitStatus)rw_data);
+          }
+          else
+          {
+
+          }
+        }
       }
       else //fault
       {
