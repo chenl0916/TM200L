@@ -78,6 +78,10 @@
 #define PD0_WAKEUP_MCU_PIN 		GPIO_Pin_0
 #define PD0_WAKEUP_MCU_PORT 	GPIOD
 
+#define I2C1_DEBUG
+
+#define WDG_USE_WINDOW_WATCHDOG	(0)
+
 
 typedef enum 
 {

@@ -41,6 +41,11 @@
   
 /* Extern variables ---------------------------------------------------------*/
 extern TimeTableT wakeuptimetable;
+#ifdef I2C1_DEBUG
+extern uint8_t i2c_control0 = 0;
+extern uint8_t i2c_control1 = 0;
+extern uint8_t i2c_control2 = 0;
+#endif
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -603,6 +608,7 @@ INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
       break;
 
       /* Check on EV2*/
+    case 0x40: case 0x0244:/* In case stop reached too early */
     case I2C_EVENT_SLAVE_BYTE_RECEIVED:
       if(rw_flag == 1)
       {
@@ -617,14 +623,23 @@ INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
           if(reg_no == I2C_OUTPUT0_CONTROL_REG)
           {
             GPIO_WriteBit(PB4_EXT_OUTPUT_PORT, PB4_EXT_OUTPUT_PIN, (BitStatus)rw_data);
+            #ifdef I2C1_DEBUG
+            i2c_control0 = 1;
+            #endif
           }
           else if(reg_no == I2C_BUCK_CONTROL_REG)
           {
             GPIO_WriteBit(PB6_BUCK_EN_PORT, PB6_BUCK_EN_PIN, (BitStatus)rw_data);
+            #ifdef I2C1_DEBUG
+            i2c_control1 = 1;
+            #endif
           }
           else if(reg_no == I2C_LOAD_SWITCH_CONTROL_REG)
           {
             //GPIO_WriteBit(, , (BitStatus)rw_data);
+            #ifdef I2C1_DEBUG
+            i2c_control2 = 1;
+            #endif
           }
           else
           {
@@ -645,8 +660,8 @@ INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
       break;
 
     default:
-            /* write to CR2 to clear STOPF flag */
-            I2C1->CR2 |= I2C_CR2_ACK;
+      /* write to CR2 to clear STOPF flag */
+      I2C1->CR2 |= I2C_CR2_ACK;
       break;
   }
 }

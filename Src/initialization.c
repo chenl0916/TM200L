@@ -107,11 +107,11 @@ static void GPIO_Configuration(void)
 	
 	// GPIO Input with Int
 	GPIO_Init(PB0_MEMS_IT_PORT , PB0_MEMS_IT_PIN , GPIO_Mode_In_FL_No_IT/*GPIO_Mode_In_FL_IT*/);
-	// GPIO_Init(PD0_WAKEUP_MCU_PORT , PD0_WAKEUP_MCU_PIN , GPIO_Mode_In_FL_IT);
+	GPIO_Init(PD0_WAKEUP_MCU_PORT , PD0_WAKEUP_MCU_PIN , GPIO_Mode_In_FL_IT);
 	GPIO_Init(PB5_EXT_INPUT_PORT , PB5_EXT_INPUT_PIN , GPIO_Mode_In_FL_IT);
 	
 	// Interrupt Configuration
-	// EXTI_SetPinSensitivity(EXTI_Pin_0 , EXTI_Trigger_Rising_Falling);
+	EXTI_SetPinSensitivity(EXTI_Pin_0 , EXTI_Trigger_Rising_Falling);
 	EXTI_SetPinSensitivity(EXTI_Pin_5 , EXTI_Trigger_Rising_Falling);
 
 	// Default value
@@ -345,8 +345,11 @@ void SystemInitialization(void)
 	// Wakeup
 	LTEControlWakeup(TRUE);
 
-	//WWDG_Configuration();
+	#if	WDG_USE_WINDOW_WATCHDOG
+	WWDG_Configuration();
+	#else
 	IWDG_Configuration();
+	#endif
 }
 
 /*******************************************************************************

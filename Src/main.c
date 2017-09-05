@@ -21,6 +21,11 @@
 
 /* Private defines -----------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+#ifdef I2C1_DEBUG
+extern uint8_t i2c_control0;
+extern uint8_t i2c_control1;
+extern uint8_t i2c_control2;
+#endif
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 static MainLoopStatT MainLoopStat = MAIN_LOOP_IDLE;
@@ -92,6 +97,15 @@ void PeriodicCheckInterrupt(void)
 	}
 }
 
+static void Tick_WatchDog(void)
+{
+	#if WDG_USE_WINDOW_WATCHDOG
+	TickWindowWatchdog();
+	#else
+	TickIndependentWatchdog();
+	#endif
+}
+
 void main(void)
 {
 	SystemInitialization();
@@ -107,20 +121,44 @@ void main(void)
 			{
 				// AT command
 				ATCmdDetection();
-				TickIndependentWatchdog();
-				// TickWindowWatchdog();
+
+				Tick_WatchDog();
+
 				// ADC check 
 				PeriodicCheckAdcValue();
-				TickIndependentWatchdog();
-				// TickWindowWatchdog();
-				
+
+				Tick_WatchDog();
+
+				#ifdef I2C1_DEBUG
+				if (i2c_control0)
+				{
+					PutStringToUart("\r\ni2c_control0");
+					i2c_control0 = 0;
+				}
+
+				if (i2c_control1)
+				{
+					PutStringToUart("\r\ni2c_control1");
+					i2c_control1 = 0;
+				}
+
+				if (i2c_control2)
+				{
+					PutStringToUart("\r\ni2c_control2");
+					i2c_control2 = 0;
+				}
+				#endif
+
 				if (GetRTCWakeStatus())
 				{
 					PutStringToUart("\r\nWakeup");
 					SetRTCWakeStatus(FALSE);
 				}
+
+				Tick_WatchDog();
+
 				// Interrupt check
-				// PeriodicCheckInterrupt();
+				PeriodicCheckInterrupt();
 			}
 			break;
 			case MAIN_LOOP_DEEP_SLEEP:
@@ -132,10 +170,11 @@ void main(void)
 				HaltPowerConsumption();
 				// Sleep now
 				halt();
-				// // DISABLE RTC wakeup
-				// RTC_WakeUpCmd(DISABLE);
 				// Re-Init
 				SystemFromHaltToIdleReinit();
+
+				Tick_WatchDog();
+
 				// Delay
 				DelayMsTime(10);
 				PutStringToUart("\r\nSleep: WAKE UP");
