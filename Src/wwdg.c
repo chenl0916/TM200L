@@ -28,7 +28,7 @@ void WWDG_Configuration(void)
   }
 
   /* WWDG configuration: WWDG is clocked by SYSCLK = 8MHz */
-  /* WWDG timeout is equal to 251,9 ms */
+  /* WWDG timeout is equal to 98.3 ms */
   /* Watchdog Window = (COUNTER_INIT - 63) * 1 step
                      = 64 * (12288 / 8Mhz)
                      = 98.3 ms

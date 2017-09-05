@@ -64,7 +64,7 @@ void ATCmdDetection(void)
 			uint16_t seconds_left = 0;
 			// // Show Time
 			// ShowCurrentTime();
-			seconds_left = QuerySecondsLeftBeforePowerReset();
+			seconds_left = QuerySecondsLeft();
 			putint(seconds_left);
 			// Show OK
 			PutStringToUart((char*)"\r\nOK\r\n");

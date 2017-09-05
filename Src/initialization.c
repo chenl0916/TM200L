@@ -14,6 +14,7 @@
 #include "main.h"
 #include "uartdrv.h"
 #include "wwdg.h"
+#include "iwdg.h"
 #include "initialization.h"
 /* Extern variables ---------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/

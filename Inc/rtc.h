@@ -47,7 +47,7 @@ extern void RTC_Configuration(void);
 extern void RTC_WakeUpSet(uint16_t SecondsToWakeup);
 extern void SetRTCWakeStatus(u8 Status);
 extern u8 GetRTCWakeStatus(void);
-extern uint16_t QuerySecondsLeftBeforePowerReset(void);
+extern uint16_t QuerySecondsLeft(void);
 extern void DectoBCD(int Dec, u8 *Bcd, int length);
 extern TimeTableT GetRTCDatetime(void);
 extern void SetRTCDatetime(TimeTableT *tm);

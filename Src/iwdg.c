@@ -50,7 +50,7 @@ void IWDG_Configuration(void)
     /* Enable IWDG (the LSI oscillator will be enabled by hardware) */
     IWDG_Enable();
 
-    /* IWDG timeout equal to 214 ms (the timeout may varies due to LSI frequency
+    /* IWDG timeout equal to 1717.6 ms (the timeout may varies due to LSI frequency
      dispersion) */
     /* Enable write access to IWDG_PR and IWDG_RLR registers */
     IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);

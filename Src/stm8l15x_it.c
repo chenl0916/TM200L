@@ -636,7 +636,7 @@ INTERRUPT_HANDLER(I2C1_SPI2_IRQHandler,29)
           }
           else if(reg_no == I2C_LOAD_SWITCH_CONTROL_REG)
           {
-            //GPIO_WriteBit(, , (BitStatus)rw_data);
+            GPIO_WriteBit(PB7_MODULE_EN_PORT, PB7_MODULE_EN_PIN, (BitStatus)rw_data);
             #ifdef I2C1_DEBUG
             i2c_control2 = 1;
             #endif

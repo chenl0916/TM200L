@@ -72,7 +72,6 @@ void RTC_Configuration(void)
 
 	// RTC wakeup set
 	RTC_WakeUpSet(RTC_WAKEUP_PERIOD_SECONDS);
-	wakeuptimetable = GetRTCDatetime();
 }
 
 void RTC_WakeUpSet(uint16_t SecondsToWakeup)
@@ -81,7 +80,9 @@ void RTC_WakeUpSet(uint16_t SecondsToWakeup)
 	RTC_ITConfig(RTC_IT_WUT, ENABLE);
 
 	RTC_SetWakeUpCounter(SecondsToWakeup);
-    RTC_WakeUpCmd(DISABLE);
+	RTC_WakeUpCmd(DISABLE);
+	
+	wakeuptimetable = GetRTCDatetime();
 }
 
 void SetRTCWakeStatus(u8 Status)
@@ -94,7 +95,7 @@ u8 GetRTCWakeStatus(void)
 	return RTCWakeStatus;
 }
 
-uint16_t QuerySecondsLeftBeforePowerReset(void)
+uint16_t QuerySecondsLeft(void)
 {
 	TimeTableT timeTable = {0};
 	timeTable = GetRTCDatetime();
