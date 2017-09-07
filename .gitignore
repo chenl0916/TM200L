@@ -1,2 +1,4 @@
-EWSTM8/*
+EWSTM8/STM8L051F3P6/*
+EWSTM8/settings/*
 .vscode/*
+*.scc
