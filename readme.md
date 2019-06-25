@@ -1,4 +1,4 @@
-TM200
+TM200/
 
 # IDE Requirement
 
